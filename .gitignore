@@ -1,0 +1,9 @@
+# Ignorar archivos .o
+*.o
+imgui.ini
+*.dll
+
+# Ignorar folder
+/Dependencies/
+/Bin/
+/Objects/
