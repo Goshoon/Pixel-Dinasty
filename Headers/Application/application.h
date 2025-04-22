@@ -11,7 +11,7 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 640
-#define RENDER_SCALE 6.0f
+#define RENDER_SCALE 8.0f
 
 class Application
 {

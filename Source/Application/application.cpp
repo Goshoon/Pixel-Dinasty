@@ -50,9 +50,11 @@ void Application::Display()
 
 void Application::DrawEverything()
 {
+  SDL_RenderSetScale(renderer, 1.0f, 1.0f);
 	ImGui::Render();
 	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
 	SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
+  SDL_RenderSetScale(renderer, RENDER_SCALE, RENDER_SCALE);
 	SDL_RenderPresent(renderer);
 }
 

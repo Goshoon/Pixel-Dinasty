@@ -3,7 +3,14 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
+#include "imgui.h"
+
+#ifndef PIXEL_H
+#define PIXEL_H
+
+class Cell;
 typedef uint8_t u8;
 
 enum Behaviour 
@@ -24,12 +31,17 @@ class Pixel
 {
 public:
   Pixel();
-  Pixel(int x, int y);
+  Pixel(int x, int y, Color col);
   
   SDL_Point position;
   Color color;
   Behaviour behaviour = DYNAMIC;
+  bool moved = true;
 
-  void Update(std::vector<std::shared_ptr<Pixel>>& cell);
+  void Update(Cell& cell);
   void Draw();
+private:
+  SDL_Point lastPosition;
 };
+
+#endif

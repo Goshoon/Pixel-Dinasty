@@ -1,19 +1,17 @@
+// https://www.youtube.com/watch?v=iUq0waTh9Pw&ab_channel=%E2%98%86111loggedin%2F%2Fxxenaa%E2%99%A1
 #include "pixel.h"
-
+#include "cell.h"
 Pixel::Pixel()
 {}
 
-Pixel::Pixel(int x, int y)
+Pixel::Pixel(int x, int y, Color col)
 {
   position.x = x;
   position.y = y;
-  color.red = 28;
-  color.green = 96;
-  color.blue = 0;
-  color.alpha = 255;
+  color = col;
 }
 
-void Pixel::Update(std::vector<std::shared_ptr<Pixel>>& cell)
+void Pixel::Update(Cell& cell)
 {
   switch(behaviour)
   {
@@ -21,10 +19,10 @@ void Pixel::Update(std::vector<std::shared_ptr<Pixel>>& cell)
       if (position.y < WINDOW_HEIGHT / RENDER_SCALE - 1)
       {
         bool canGoDown = true;
-        for (int i = 0; i < cell.size(); i++)
+        for (int i = 0; i < cell.pixels.size(); i++)
         {
-          if (cell.at(i)->position.y == position.y+1)
-            if(cell.at(i)->position.x == position.x)
+          if (cell.pixels.at(i)->position.y == position.y+1)
+            if(cell.pixels.at(i)->position.x == position.x)
               canGoDown = false;
         }
 
@@ -33,6 +31,29 @@ void Pixel::Update(std::vector<std::shared_ptr<Pixel>>& cell)
       }
       break;
   }
+
+  if (!(lastPosition.x == position.x && lastPosition.y == position.y))
+  {
+    if(!cell.Contains(position))
+    {
+      moved = true;
+      auto it = std::find(cell.pixels.begin(), cell.pixels.end(), this);
+      if (it != cell.pixels.end())
+      {
+        cell.pixels.erase(it);
+      }
+    }
+    else 
+    {
+      moved = false;
+    }
+  }
+  else
+  {
+    moved = false;
+  }
+
+  lastPosition = position;
 }
 
 void Pixel::Draw()

@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    cout << app.mPosition.x << " : " << app.mPosition.y << "\n";
+    //cout << app.mPosition.x << " : " << app.mPosition.y << "\n";
 
     currentScreen->Update(); /* Metodo de crear botones e interacciones de la escena actual */
 		app.Display(); /* Mostrar interfaces y Actualizar pantalla */
