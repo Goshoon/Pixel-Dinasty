@@ -10,7 +10,6 @@
 #ifndef PIXEL_H
 #define PIXEL_H
 
-class Cell;
 typedef uint8_t u8;
 
 enum Behaviour 
@@ -33,15 +32,16 @@ public:
   Pixel();
   Pixel(int x, int y, Color col);
   
-  SDL_Point position;
+  SDL_Rect position;
   Color color;
   Behaviour behaviour = DYNAMIC;
   bool moved = true;
 
-  void Update(Cell& cell);
+  void Update();
   void Draw();
 private:
   SDL_Point lastPosition;
+  Application& app = Application::GetInstance();
 };
 
 #endif

@@ -1,6 +1,5 @@
 #pragma once
 #include "screen.h"
-#include "cell.h"
 #include "pixel.h"
 #include <vector>
 #include <memory>
@@ -14,20 +13,9 @@ public:
 	void Update() override;
 	void Render() override;
 
-  int cells = 2;
-  int horizontalThreshold = (WINDOW_WIDTH/RENDER_SCALE) / cells;
-  int verticalThreshold = (WINDOW_HEIGHT/RENDER_SCALE) / cells;
-
   /* All Pixel instances */
-  std::vector<Pixel*> pixels;
-
-  /* Quadtree Cells */
-  Cell topLeft = Cell(0, horizontalThreshold, 0, verticalThreshold);
-  Cell bottomLeft = Cell(0, horizontalThreshold, verticalThreshold, WINDOW_HEIGHT);
-  Cell topRight = Cell(horizontalThreshold, WINDOW_WIDTH, 0, verticalThreshold);
-  Cell bottomRight = Cell(horizontalThreshold, WINDOW_WIDTH, verticalThreshold, WINDOW_HEIGHT);
+  std::vector<Pixel> pixels;
 private:
-  Cell* mCell;
   float mbCooldown = 0.0f;
   bool brushMenu = false;
   bool sandboxMenu = false;
