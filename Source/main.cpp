@@ -3,27 +3,25 @@ using std::cout, std::cin, std::shared_ptr, std::unique_ptr, std::make_unique;
 
 int main(int argc, char* argv[])
 {
-	// Inicializar SDL2 & ImGui
+	// Initialize SDL2 & ImGui
 	Inititialize();
 
-	// Crear escena inicial
+	// Create initial scene
 	unique_ptr<Screen> currentScreen = make_unique<sceneExample>();
   Application& app = Application::GetInstance();
 
-	while(!app.done) /* Ciclo loop */
+	while(!app.done)
 	{
-		app.Input(); /* Detectar teclas e interacciones con la ventana */
+		app.Input(); /* User inputs */
 
 		ImGui_ImplSDLRenderer2_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    //cout << app.mPosition.x << " : " << app.mPosition.y << "\n";
-
-    currentScreen->Update(); /* Metodo de crear botones e interacciones de la escena actual */
+    currentScreen->Update(); /* Scene update position and input */
 		app.Display(); /* Mostrar interfaces y Actualizar pantalla */
-		currentScreen->Render(); /* Metodo de mostrar elementos como imagenes u efectos */
-		app.DrawEverything(); /* Actualizar la pantalla y dibujar el frame actual */
+		currentScreen->Render(); /* Render elements on the scene */
+		app.DrawEverything(); /* Refresh window and clear renderer */
 	}
 
 	// Cerrar dependencias y limpiar memoria

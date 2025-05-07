@@ -3,6 +3,8 @@
 sceneExample::sceneExample()
 {
 	std::cout << "Created scenedd!\n";
+  pixels.reserve(2000);
+  //SDL_SetWindowOpacity(app.window, 0.5f);
 }
 
 sceneExample::~sceneExample()
@@ -11,26 +13,78 @@ sceneExample::~sceneExample()
 void sceneExample::Update()
 {
   mbCooldown *= 0.1f;
+  col.red = static_cast<int>(color.x * 255.0f);
+  col.green = static_cast<int>(color.y * 255.0f);
+  col.blue = static_cast<int>(color.z * 255.0f);
+  col.alpha = static_cast<int>(color.w * 255.0f);
 
-  /* Create Pixels */
-  if(app.mbLeft && mbCooldown < 1)
+  /* Clear Quadtree and place Pixels on repective cells */
+  quadtree.Clear();
+  for (auto& pix : pixels)
+    quadtree.Insert(&pix);
+
+  /* Update every Pixel */
+  for (auto& pix : pixels)
   {
-    if (!ImGui::GetIO().WantCaptureMouse)
+    std::vector<Pixel*> nearby;
+    quadtree.Retrieve(nearby, pix.position);
+    pix.Update(nearby);
+  }
+
+  /* Check if in SDL2 Context */
+  if (!ImGui::GetIO().WantCaptureMouse)
+  {
+    /* Create Pixels */
+    if(app.mbLeft && mbCooldown < 1)
     {
-      Color col;
-      col.red = static_cast<int>(color.x * 255.0f);
-      col.green = static_cast<int>(color.y * 255.0f);
-      col.blue = static_cast<int>(color.z * 255.0f);
-      col.alpha = static_cast<int>(color.w * 255.0f);
-      Pixel pixel = Pixel(app.mPosition.x, app.mPosition.y, col);
-      pixels.emplace_back(pixel);
-      mbCooldown = 100.0f;
+      if (SDL_PointInRect(&app.mPosition, &quadtree.bounds))
+      {
+        std::cout << pixels.size() << "\n";
+        bool canPlace = true;
+        std::vector<Pixel*> nearby;
+        SDL_Rect mPosition = { app.mPosition.x, app.mPosition.y, 1, 1 };
+        quadtree.Retrieve(nearby, mPosition);
+
+        for(auto& near : nearby)
+        {
+          if (near->position.x == app.mPosition.x && near->position.y == app.mPosition.y)
+          {
+            canPlace = false;
+            break;
+          }
+        }
+
+        if (canPlace)
+        {
+          Pixel pixel = Pixel(app.mPosition.x, app.mPosition.y, col);
+          pixels.emplace_back(pixel);
+          mbCooldown = 100.0f;
+        }
+      }
     }
+    else if (app.mbRight && mbCooldown < 1) /* Erase Pixels */
+    {
+      mbCooldown = 100.0f;
+      for (auto it = pixels.begin(); it != pixels.end(); ) 
+      {
+        if (SDL_PointInRect(&app.mPosition, &it->position)) 
+        {
+          // Erase
+        }
+        else
+        {
+          ++it;
+        }
+      }
+    } 
   }
 }
 
 void sceneExample::Render()
 {
+  //quadtree.Draw(app.renderer);
+  SDL_SetRenderDrawColor(app.renderer, col.red, col.green, col.blue, 100);
+  SDL_RenderDrawPoint(app.renderer, app.mPosition.x, app.mPosition.y);
   for(int i = 0; i < pixels.size(); i++)
     pixels.at(i).Draw();
 
@@ -53,6 +107,25 @@ void sceneExample::Render()
     ImGui::MenuItem("Sandbox");
     ImGui::EndMenu();
   }
+
+  if (ImGui::BeginMenu("Window"))
+  {
+    if (ImGui::MenuItem("Fullscreen"))
+    {
+      Uint32 flags = SDL_GetWindowFlags(app.window);
+
+      if (flags & SDL_WINDOW_FULLSCREEN) 
+      {
+        SDL_SetWindowFullscreen(app.window, 0);
+      }
+      else
+      {
+        SDL_SetWindowFullscreen(app.window, SDL_WINDOW_FULLSCREEN);
+      }
+    }
+    ImGui::EndMenu();
+  }
+
   ImGui::EndMainMenuBar();
 
   if (brushMenu)

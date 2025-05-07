@@ -1,5 +1,6 @@
 #pragma once
 #include "application.h"
+#include "color.h"
 #include <cstdint>
 #include <vector>
 #include <memory>
@@ -10,20 +11,11 @@
 #ifndef PIXEL_H
 #define PIXEL_H
 
-typedef uint8_t u8;
-
 enum Behaviour 
 {
   STATIC,
-  DYNAMIC
-};
-
-struct Color
-{
-  u8 red;
-  u8 green;
-  u8 blue;
-  u8 alpha;
+  DYNAMIC,
+  WATER
 };
 
 class Pixel
@@ -37,11 +29,22 @@ public:
   Behaviour behaviour = DYNAMIC;
   bool moved = true;
 
-  void Update();
+  bool CheckCollision(const Pixel& other) const
+  {
+    if (this == &other) return false;
+
+    SDL_Rect nextPosition = position;
+    nextPosition.y += 1;
+    return SDL_HasIntersection(&nextPosition, &other.position);
+  }
+
+  void Update(std::vector<Pixel*>& nearby);
   void Draw();
 private:
   SDL_Point lastPosition;
   Application& app = Application::GetInstance();
+
+  void Gravity(std::vector<Pixel*>& nearby);
 };
 
 #endif

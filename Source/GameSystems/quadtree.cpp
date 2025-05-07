@@ -3,15 +3,18 @@
 Quadtree::Quadtree(int level, SDL_Rect bounds)
     : level(level), bounds(bounds) {}
 
-void Quadtree::clear() {
+void Quadtree::Clear()
+{
     pixels.clear();
-    for (auto& node : nodes) {
-        if (node) node->clear();
+    for (auto& node : nodes)
+    {
+        if (node) node->Clear();
     }
     nodes.clear();
 }
 
-void Quadtree::split() {
+void Quadtree::Split()
+{
     int subWidth = bounds.w / 2;
     int subHeight = bounds.h / 2;
     int x = bounds.x;
@@ -23,7 +26,7 @@ void Quadtree::split() {
     nodes.emplace_back(std::make_unique<Quadtree>(level + 1, SDL_Rect{x + subWidth, y + subHeight, subWidth, subHeight}));
 }
 
-int Quadtree::getIndex(const SDL_Rect& rect) const 
+int Quadtree::GetIndex(const SDL_Rect& rect) const
 {
     int verticalMidpoint = bounds.x + bounds.w / 2;
     int horizontalMidpoint = bounds.y + bounds.h / 2;
@@ -41,58 +44,73 @@ int Quadtree::getIndex(const SDL_Rect& rect) const
     return -1;  // doesn't fit neatly into a quadrant
 }
 
-void Quadtree::insert(Pixel* pixel) 
+void Quadtree::Insert(Pixel* pixel) 
 {
-  if (!nodes.empty()) 
-  {
-    SDL_Rect tempRect = { pixel->position.x, pixel->position.y, 1, 1 }; // Convertion of SDL_Point to SDL_Rect
-    int index = getIndex(tempRect);
-    if (index != -1)
+    if (!nodes.empty())
     {
-      nodes[index]->insert(pixel);
-      return;
+        int index = GetIndex(pixel->position);
+        if (index != -1)
+        {
+            nodes[index]->Insert(pixel);
+            return;
+        }
     }
-  }
 
-  pixels.push_back(pixel);
+    pixels.push_back(pixel);
 
-  if (pixels.size() > MAX_PIXELS && level < MAX_LEVELS)
-  {
-    if (nodes.empty()) split();
-    auto it = pixels.begin();
-
-    while (it != pixels.end())
+    if (pixels.size() > MAX_ENTITIES && level < MAX_LEVELS)
     {
-      SDL_Rect tempArea = { (*it)->position.x, (*it)->position.y, 1, 1 };
-      int index = getIndex(tempArea);
-      if (index != -1)
-      {
-        nodes[index]->insert(*it);
-        it = pixels.erase(it);
-      } 
-      else
-      {
-        ++it;
-      }
+        if (nodes.empty()) Split();
+
+        auto it = pixels.begin();
+        while (it != pixels.end())
+        {
+            int index = GetIndex((*it)->position);
+            if (index != -1)
+            {
+                nodes[index]->Insert(*it);
+                it = pixels.erase(it);
+            } 
+            else
+            {
+                ++it;
+            }
+        }
     }
-  }
 }
 
-void Quadtree::retrieve(std::vector<Pixel*>& returnPixels, const SDL_Point& area) {
-    SDL_Rect rectArea = { area.x, area.y, 0, 0 };
-    int index = getIndex(rectArea);
+void Quadtree::Retrieve(std::vector<Pixel*>& returnPixels, const SDL_Rect& area) 
+{
+    // Recurse into children that intersect the query area
+    if (!nodes.empty()) {
+        for (const auto& node : nodes) {
+            if (SDL_HasIntersection(&node->bounds, &area)) {
+                node->Retrieve(returnPixels, area);
+            }
+        }
+    }
+
+    // Add all objects in this node
+    returnPixels.insert(returnPixels.end(), pixels.begin(), pixels.end());
+}
+/*
+void Quadtree::Retrieve(std::vector<Pixel*>& returnPixels, const SDL_Rect& area) 
+{
+    int index = GetIndex(area);
     if (index != -1 && !nodes.empty()) {
-        nodes[index]->retrieve(returnPixels, area);
+        nodes[index]->Retrieve(returnPixels, area);
     }
 
     returnPixels.insert(returnPixels.end(), pixels.begin(), pixels.end());
 }
-
-void Quadtree::draw(SDL_Renderer* renderer) const {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // Red borders
+*/
+void Quadtree::Draw(SDL_Renderer* renderer) const
+{
+    SDL_SetRenderDrawColor(renderer, 0, 0, 190, 100);
     SDL_RenderDrawRect(renderer, &bounds);
 
-    for (const auto& node : nodes) {
-        if (node) node->draw(renderer);
+    for (const auto& node : nodes) 
+    {
+        if (node) node->Draw(renderer);
     }
 }

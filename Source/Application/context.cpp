@@ -1,4 +1,5 @@
 #include "context.h"
+#include <time.h>
 
 void Inititialize() // Iniciar SDL y SDL_Image
 {

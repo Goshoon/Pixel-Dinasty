@@ -12,15 +12,15 @@ Pixel::Pixel(int x, int y, Color col)
   color = col;
 }
 
-void Pixel::Update()
+void Pixel::Update(std::vector<Pixel*>& nearby)
 {
   switch(behaviour)
   {
     case DYNAMIC:
-      if (position.y < WINDOW_HEIGHT / RENDER_SCALE - 1)
-      {
-          position.y += 1;
-      }
+      Gravity(nearby);
+      break;
+    case WATER:
+      Gravity(nearby);
       break;
   }
 }
@@ -28,5 +28,26 @@ void Pixel::Update()
 void Pixel::Draw()
 {
   SDL_SetRenderDrawColor(app.renderer, color.red, color.green, color.blue, color.alpha);
-  SDL_RenderDrawPoint(app.renderer, position.x, position.y);
+  SDL_RenderDrawRect(app.renderer, &position);
+}
+
+void Pixel::Gravity(std::vector<Pixel*>& nearby)
+{
+  if (position.y < WINDOW_HEIGHT / RENDER_SCALE - 1)
+  {
+    bool canGoDown = true;
+    for (auto& near : nearby)
+    {
+      if (CheckCollision(*near))
+      {
+        canGoDown = false;
+        break;
+      }
+    }
+
+    if (canGoDown)
+    {
+      position.y++;
+    }
+  }
 }

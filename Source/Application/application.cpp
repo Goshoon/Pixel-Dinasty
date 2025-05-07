@@ -18,11 +18,11 @@ Application::Application()
 	window = SDL_CreateWindow(
 		"Application", 
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN
+		WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN 
 	);
 
 	renderer = SDL_CreateRenderer(
-		window, -1, SDL_RENDERER_ACCELERATED 
+		window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
 	);
 
 	done = false;
@@ -30,6 +30,7 @@ Application::Application()
 	mbRight = false;
 
   SDL_RenderSetScale(renderer, RENDER_SCALE, RENDER_SCALE);
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 }
 
 Application::~Application()
@@ -90,7 +91,6 @@ void Application::Input() /* Teclas e interacciones con la ventana */
 					mbRight = true;
 				break;
 				}
-
 			break;
 			case SDL_MOUSEBUTTONUP:
 				mbLeft = false;
