@@ -27,5 +27,4 @@ private:
   ImVec4 color = ImVec4( 1.0f, 0.0f, 0.0f, 1.0f );
   Color col;
   Quadtree quadtree = Quadtree(0, worldBounds);
-  Application& app = Application::GetInstance();
 };

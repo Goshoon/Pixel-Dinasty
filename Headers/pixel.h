@@ -42,8 +42,6 @@ public:
   void Draw();
 private:
   SDL_Point lastPosition;
-  Application& app = Application::GetInstance();
-
   void Gravity(std::vector<Pixel*>& nearby);
 };
 

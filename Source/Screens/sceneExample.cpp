@@ -4,7 +4,6 @@ sceneExample::sceneExample()
 {
 	std::cout << "Created scenedd!\n";
   pixels.reserve(2000);
-  //SDL_SetWindowOpacity(app.window, 0.5f);
 }
 
 sceneExample::~sceneExample()
@@ -12,6 +11,7 @@ sceneExample::~sceneExample()
 
 void sceneExample::Update()
 {
+  Application& app = Application::GetInstance();
   mbCooldown *= 0.1f;
   col.red = static_cast<int>(color.x * 255.0f);
   col.green = static_cast<int>(color.y * 255.0f);
@@ -67,9 +67,10 @@ void sceneExample::Update()
       mbCooldown = 100.0f;
       for (auto it = pixels.begin(); it != pixels.end(); ) 
       {
-        if (SDL_PointInRect(&app.mPosition, &it->position)) 
+        if (SDL_PointInRect(&app.mPosition, &it->position) == SDL_TRUE) 
         {
           // Erase
+          pixels.erase(it);
         }
         else
         {
@@ -82,6 +83,7 @@ void sceneExample::Update()
 
 void sceneExample::Render()
 {
+  Application& app = Application::GetInstance();
   //quadtree.Draw(app.renderer);
   SDL_SetRenderDrawColor(app.renderer, col.red, col.green, col.blue, 100);
   SDL_RenderDrawPoint(app.renderer, app.mPosition.x, app.mPosition.y);

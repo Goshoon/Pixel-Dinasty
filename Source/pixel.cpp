@@ -27,6 +27,7 @@ void Pixel::Update(std::vector<Pixel*>& nearby)
 
 void Pixel::Draw()
 {
+  Application& app = Application::GetInstance();
   SDL_SetRenderDrawColor(app.renderer, color.red, color.green, color.blue, color.alpha);
   SDL_RenderDrawRect(app.renderer, &position);
 }
