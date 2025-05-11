@@ -44,7 +44,7 @@ Mix_Music* Application::GetSound(const std::string& ID)
 Application::Application()
 {
 	window = SDL_CreateWindow(
-		"Application", 
+		WINDOW_NAME, 
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN 
 	);
@@ -59,6 +59,11 @@ Application::Application()
 
   SDL_RenderSetScale(renderer, RENDER_SCALE, RENDER_SCALE);
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+  backgroundColor.red = 0;
+  backgroundColor.green = 0;
+  backgroundColor.blue = 0;
+  backgroundColor.alpha = 255;
 }
 
 Application::~Application()
@@ -87,7 +92,7 @@ void Application::DrawEverything()
   SDL_RenderSetScale(renderer, 1.0f, 1.0f);
 	ImGui::Render();
 	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
-	SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
+	SDL_SetRenderDrawColor( renderer, backgroundColor.red, backgroundColor.green, backgroundColor.blue, 255 );
   SDL_RenderSetScale(renderer, RENDER_SCALE, RENDER_SCALE);
 	SDL_RenderPresent(renderer);
 }

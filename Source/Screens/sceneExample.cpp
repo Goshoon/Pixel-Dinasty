@@ -20,6 +20,10 @@ void sceneExample::Update()
   col.blue = static_cast<int>(color.z * 255.0f);
   col.alpha = static_cast<int>(color.w * 255.0f);
 
+  app.backgroundColor.red = static_cast<int>(backgroundColor.x * 255.0f);
+  app.backgroundColor.green = static_cast<int>(backgroundColor.y * 255.0f);
+  app.backgroundColor.blue = static_cast<int>(backgroundColor.z * 255.0f);
+
   /* Clear Quadtree and place Pixels on repective cells */
   quadtree.Clear();
   for (auto& pix : pixels)
@@ -89,7 +93,7 @@ void sceneExample::Update()
 void sceneExample::Render()
 {
   Application& app = Application::GetInstance();
-  //quadtree.Draw(app.renderer);
+
   SDL_SetRenderDrawColor(app.renderer, col.red, col.green, col.blue, 100);
   SDL_RenderDrawPoint(app.renderer, app.mPosition.x, app.mPosition.y);
   for(int i = 0; i < pixels.size(); i++)
@@ -111,7 +115,10 @@ void sceneExample::Render()
   {
     if (ImGui::MenuItem("Brush"))
       brushMenu = (brushMenu ? false : true );
-    ImGui::MenuItem("Sandbox");
+
+    if (ImGui::MenuItem("Sandbox"))
+      sandboxMenu = (sandboxMenu ? false : true);
+
     ImGui::EndMenu();
   }
 
@@ -138,6 +145,7 @@ void sceneExample::Render()
   if (brushMenu)
   {
     ImGui::Begin("Brush!", &brushMenu);
+    ImGui::Text("Brush color");
     ImGui::ColorEdit4("Color", (float*)&color, ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_AlphaBar );
 
     if (ImGui::Button("Static"))
@@ -151,6 +159,14 @@ void sceneExample::Render()
     if (ImGui::Button("Water"))
       currentBehaviour = WATER;
     */
+    ImGui::End();
+  }
+
+  if (sandboxMenu)
+  {
+    ImGui::Begin("Sandbox!", &sandboxMenu);
+    ImGui::Text("Background color");
+    ImGui::ColorEdit3("Color",(float*)&backgroundColor , ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_AlphaBar );
     ImGui::End();
   }
 

@@ -14,6 +14,7 @@
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 640
+#define WINDOW_NAME "Pixel Dynasty: Sand Simulation!"
 #define RENDER_SCALE 16.0f
 
 class Application
@@ -44,6 +45,8 @@ public:
   void AddSound(const std::string& ID, const char* fileDir);
   Mix_Music* GetSound(const std::string& ID);
 
+  Color backgroundColor;
+
   /* Rendering */
 	void Display();
 	void DrawEverything();
@@ -53,8 +56,6 @@ public:
 private:
   Application();
 	~Application();
-
-  SDL_Color backgroundColor;
 
   Application(const Application&) = delete;
   Application& operator=(const Application&) = delete;
