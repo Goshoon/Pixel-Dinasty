@@ -7,6 +7,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
+#include "color.h"
+
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
 
@@ -52,9 +54,12 @@ private:
   Application();
 	~Application();
 
+  SDL_Color backgroundColor;
+
   Application(const Application&) = delete;
   Application& operator=(const Application&) = delete;
 
 	void InputReleased(SDL_Event* event);
 	void InputPressed(SDL_Event* event);
+
 };

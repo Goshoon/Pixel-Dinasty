@@ -143,6 +143,8 @@ void sceneExample::Render()
     if (ImGui::Button("Static"))
       currentBehaviour = STATIC;
 
+    ImGui::SameLine();
+
     if (ImGui::Button("Dynamic"))
       currentBehaviour = DYNAMIC;
 /*
