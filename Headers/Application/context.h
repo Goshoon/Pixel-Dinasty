@@ -8,7 +8,6 @@
 #include "imgui_impl_sdlrenderer2.h"
 
 #include "application.h"
-extern std::unique_ptr<Application> app;
 
 #ifndef CONTEXT_H
 #define CONTEXT_H

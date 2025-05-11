@@ -3,7 +3,6 @@
   - Pixeles dinamicos
   - Suavizado en el pincel
   - Diferentes tipos de pincel con grosoeres
-  - Pixeles en la misma posicion deben ser eliminados
   - Menu de inicio
   - Save State, Load, New, Exit
     * Save State: Vector de datos guardado en un archivo .json

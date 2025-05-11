@@ -20,6 +20,9 @@ public:
   /* All Pixel instances */
   std::vector<Pixel> pixels;
 private:
+  Behaviour currentBehaviour = DYNAMIC;
+  Mix_Music* placeSound;
+  Mix_Music* deleteSound;
   float mbCooldown = 0.0f;
   bool brushMenu = false;
   bool sandboxMenu = false;

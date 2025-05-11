@@ -3,7 +3,9 @@
 sceneExample::sceneExample()
 {
 	std::cout << "Created scenedd!\n";
-  pixels.reserve(2000);
+  pixels.reserve(1700);
+  placeSound = Application::GetInstance().GetSound("pixel");
+  deleteSound = Application::GetInstance().GetSound("delete");
 }
 
 sceneExample::~sceneExample()
@@ -56,7 +58,9 @@ void sceneExample::Update()
 
         if (canPlace)
         {
+          Mix_PlayMusic(placeSound, 1);
           Pixel pixel = Pixel(app.mPosition.x, app.mPosition.y, col);
+          pixel.behaviour = currentBehaviour;
           pixels.emplace_back(pixel);
           mbCooldown = 100.0f;
         }
@@ -71,6 +75,7 @@ void sceneExample::Update()
         {
           // Erase
           pixels.erase(it);
+          Mix_PlayMusic(deleteSound, 1);
         }
         else
         {
@@ -134,6 +139,16 @@ void sceneExample::Render()
   {
     ImGui::Begin("Brush!", &brushMenu);
     ImGui::ColorEdit4("Color", (float*)&color, ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_AlphaBar );
+
+    if (ImGui::Button("Static"))
+      currentBehaviour = STATIC;
+
+    if (ImGui::Button("Dynamic"))
+      currentBehaviour = DYNAMIC;
+/*
+    if (ImGui::Button("Water"))
+      currentBehaviour = WATER;
+    */
     ImGui::End();
   }
 

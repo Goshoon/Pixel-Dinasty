@@ -27,7 +27,7 @@ for %%f in (%SOURCES%) do (
 )
 
 :: Conectar todos los archivos al ejecutable
-g++ %OBJECTS% -L C:/Dependencies/SDL2/lib -o ./Bin/run.exe -static-libgcc -static-libstdc++ -lmingw32 -Wpedantic -Wmaybe-uninitialized -DSDL2_STATIC -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+g++ %OBJECTS% -L C:/Dependencies/SDL2/lib -o ./Bin/run.exe -static-libgcc -static-libstdc++ -lmingw32 -Wpedantic -Wmaybe-uninitialized -DSDL2_STATIC -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
  if errorlevel 1 (
     echo Linker error compiling %%f.
     pause

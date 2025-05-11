@@ -1,18 +1,46 @@
 #include "application.h"
 
+/* Asset Management */
 void Application::AddTexture(const std::string& ID, const char* fileDir)
 {
 	SDL_Texture* texture = IMG_LoadTexture(renderer, fileDir);
-	images[ID] = texture;
+
+  if (!texture)
+  {
+    std::cout << "Error! couldn't load image: " << ID << "\n";
+  }
+  else 
+  {
+	  images[ID] = texture;
+  }
 }
 
 SDL_Texture* Application::GetTexture(const std::string& ID) 
 {
 	auto it = images.find(ID);
 	return it != images.end() ? it->second : nullptr;
-	std::cout << images.size();
 }
 
+void Application::AddSound(const std::string& ID, const char* fileDir)
+{
+  Mix_Music* sound = Mix_LoadMUS(fileDir);
+  if (!sound)
+  {
+    std::cout << "Error! couldnt load sound: " << ID << "\n";
+  }
+  else
+  {
+    sounds[ID] = sound;
+  }
+}
+
+Mix_Music* Application::GetSound(const std::string& ID)
+{
+  auto it = sounds.find(ID);
+  return it != sounds.end() ? it->second : nullptr;
+}
+
+/* Constructors */
 Application::Application()
 {
 	window = SDL_CreateWindow(
@@ -42,8 +70,13 @@ Application::~Application()
 	{
 		SDL_DestroyTexture(pair.second);
 	}
+  for(auto& pair : sounds)
+  {
+    Mix_FreeMusic(pair.second);
+  }
 }
 
+/* Rendering */
 void Application::Display()
 {
 	SDL_RenderClear( renderer );	

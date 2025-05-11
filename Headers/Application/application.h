@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
@@ -19,6 +20,7 @@ public:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	std::unordered_map<std::string, SDL_Texture*> images;
+  std::unordered_map<std::string, Mix_Music*> sounds;
 
 	bool done = false;
 	bool mbLeft = false;
@@ -31,11 +33,18 @@ public:
     return instance;
   }
 
-	void Display();
-	void DrawEverything();
+  /* Main Functionalities */
 	void Input();
+
+  /* Asset Management */
 	void AddTexture(const std::string& ID, const char* fileDir);
 	SDL_Texture* GetTexture(const std::string& ID);
+  void AddSound(const std::string& ID, const char* fileDir);
+  Mix_Music* GetSound(const std::string& ID);
+
+  /* Rendering */
+	void Display();
+	void DrawEverything();
 	void DrawRectangle(int x, int y, int width, int height, SDL_Color color);
 	void RenderImage( SDL_Texture* image, int x, int y );
 	void RenderImage( SDL_Texture* image, int x, int y, int w, int h );
