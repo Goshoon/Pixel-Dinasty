@@ -155,10 +155,12 @@ void sceneExample::Render()
 
     if (ImGui::Button("Dynamic"))
       currentBehaviour = DYNAMIC;
-/*
+
+    ImGui::SameLine();
+
     if (ImGui::Button("Water"))
       currentBehaviour = WATER;
-    */
+    
     ImGui::End();
   }
 

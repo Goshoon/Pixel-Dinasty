@@ -1,6 +1,7 @@
 #pragma once
 #include "application.h"
 #include "color.h"
+#include "collision.h"
 #include <cstdint>
 #include <vector>
 #include <memory>
@@ -29,14 +30,8 @@ public:
   Behaviour behaviour = DYNAMIC;
   bool moved = true;
 
-  bool CheckCollision(const Pixel& other) const
-  {
-    if (this == &other) return false;
-
-    SDL_Rect nextPosition = position;
-    nextPosition.y += 1;
-    return SDL_HasIntersection(&nextPosition, &other.position);
-  }
+  bool CheckCollision(std::vector<Pixel*>& nearby);
+  bool CheckCollision(std::vector<Pixel*>& nearby, int xoffset, int yoffset);
 
   void Update(std::vector<Pixel*>& nearby);
   void Draw();

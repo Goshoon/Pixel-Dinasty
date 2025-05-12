@@ -37,18 +37,46 @@ void Pixel::Gravity(std::vector<Pixel*>& nearby)
   if (position.y < WINDOW_HEIGHT / RENDER_SCALE - 1)
   {
     bool canGoDown = true;
-    for (auto& near : nearby)
-    {
-      if (CheckCollision(*near))
-      {
-        canGoDown = false;
-        break;
-      }
-    }
+
+    if (CheckCollision(nearby, 0, 1))
+      canGoDown = false;
 
     if (canGoDown)
     {
       position.y++;
     }
   }
+}
+
+/* Collision */
+bool Pixel::CheckCollision(std::vector<Pixel*>& nearby)
+{
+  for(auto& near : nearby)
+  {
+    if (this == near) continue;
+
+    if (Collide(position, near->position))
+      return true;
+  }
+
+  return false;
+}
+
+bool Pixel::CheckCollision(std::vector<Pixel*>& nearby, int xoffset, int yoffset)
+{
+  SDL_Rect pos = position;
+  pos.x += xoffset;
+  pos.y += yoffset;
+
+  for(auto& near : nearby)
+  {
+    if (this == near) continue;
+
+    if (Collide(pos, near->position))
+    {
+      return true;
+    }
+  }
+
+  return false;
 }
