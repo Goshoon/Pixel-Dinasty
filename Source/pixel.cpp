@@ -14,6 +14,7 @@ Pixel::Pixel(int x, int y, Color col)
 
 void Pixel::Update(std::vector<Pixel*>& nearby)
 {
+  int worldBorder = WINDOW_HEIGHT / RENDER_SCALE - 1;
   switch(behaviour)
   {
     case DYNAMIC:
@@ -21,6 +22,39 @@ void Pixel::Update(std::vector<Pixel*>& nearby)
       break;
     case WATER:
       Gravity(nearby);
+
+      bool leftFree = CheckCollision(nearby, -1, 0);
+      bool rightFree = CheckCollision(nearby, 1, 0);
+
+      if (CheckCollision(nearby, 0, 1) || position.y == worldBorder)
+      {
+        if(leftFree && rightFree)
+        {
+          std::random_device rd;
+          std::mt19937 gen(rd());
+
+          std::uniform_int_distribution<> dist(0, 1);
+
+          int random_number = dist(gen);
+
+          if(random_number == 0)
+          {
+            position.x--;
+          }
+          else 
+          {
+            position.x++;
+          }
+        }
+        else if (leftFree)
+        {
+          position.x--;
+        }
+        else if (rightFree)
+        {
+          position.x++;
+        }
+      }
       break;
   }
 }

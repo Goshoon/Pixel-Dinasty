@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
-
+#include <random>
 #include "imgui.h"
 
 #ifndef PIXEL_H

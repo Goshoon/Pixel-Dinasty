@@ -65,6 +65,15 @@ void sceneExample::Update()
           Mix_PlayMusic(placeSound, 1);
           Pixel pixel = Pixel(app.mPosition.x, app.mPosition.y, col);
           pixel.behaviour = currentBehaviour;
+
+          if (currentBehaviour == WATER)
+          {
+            pixel.color.red = 0;
+            pixel.color.green = 0;
+            pixel.color.blue = 155;
+            pixel.color.alpha = 155;
+          }
+
           pixels.emplace_back(pixel);
           mbCooldown = 100.0f;
         }

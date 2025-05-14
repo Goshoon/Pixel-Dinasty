@@ -60,6 +60,10 @@ Application::Application()
   SDL_RenderSetScale(renderer, RENDER_SCALE, RENDER_SCALE);
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
+  SDL_Surface* icon = IMG_Load("icon.png");
+  SDL_SetWindowIcon(window, icon);
+  SDL_FreeSurface(icon);
+
   backgroundColor.red = 0;
   backgroundColor.green = 0;
   backgroundColor.blue = 0;
