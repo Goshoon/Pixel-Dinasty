@@ -148,7 +148,10 @@ void Application::InputReleased(SDL_Event* event)
 	{
 		case SDLK_ESCAPE:
 			done = true;
-		break;
+  		break;
+    case SDLK_SPACE:
+      kSpace = false;
+      break;
 	}
 }
 
@@ -156,9 +159,9 @@ void Application::InputPressed(SDL_Event* event)
 {
 	switch (event->key.keysym.sym)
 	{
-		case SDLK_w:
-			std::cout << "hola";
-		break;
+    case SDLK_SPACE:
+      kSpace = true;
+      break;
 	}
 }
 

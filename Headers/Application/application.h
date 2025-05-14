@@ -26,6 +26,7 @@ public:
   std::unordered_map<std::string, Mix_Music*> sounds;
 
 	bool done = false;
+  bool kSpace = false;
 	bool mbLeft = false;
 	bool mbRight = false;
   SDL_Point mPosition; // Relative mouse Position (x, y)

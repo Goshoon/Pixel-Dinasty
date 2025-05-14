@@ -1,6 +1,8 @@
 @echo off
 color 2
 setlocal enabledelayedexpansion
+windres resources.rc -O coff -o resources.res
+set APPNAME=PixelDynasty
 set "SOURCES="
 set "OBJECTS="
 set "INCLUDES="
@@ -27,7 +29,7 @@ for %%f in (%SOURCES%) do (
 )
 
 :: Conectar todos los archivos al ejecutable
-g++ %OBJECTS% -L C:/Dependencies/SDL2/lib -o ./Bin/run.exe -static-libgcc -static-libstdc++ -lmingw32 -Wpedantic -Wmaybe-uninitialized -DSDL2_STATIC -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+g++ %OBJECTS% -L C:/Dependencies/SDL2/lib -o ./Bin/%APPNAME%.exe resources.res -static-libgcc -static-libstdc++ -lmingw32 -Wpedantic -Wmaybe-uninitialized -DSDL2_STATIC -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
  if errorlevel 1 (
     echo Linker error compiling %%f.
     pause
@@ -37,7 +39,7 @@ g++ %OBJECTS% -L C:/Dependencies/SDL2/lib -o ./Bin/run.exe -static-libgcc -stati
 pause
 
 echo Compilation succeeded. Running the app...
-start ./Bin/run.exe
+start ./Bin/%APPNAME%.exe
 
 endlocal
 exit

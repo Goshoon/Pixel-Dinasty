@@ -1,23 +1,16 @@
 #pragma once
 #include "application.h"
 #include "color.h"
+#include "behaviour.h"
 #include "collision.h"
+
+#include "imgui.h"
+
 #include <cstdint>
 #include <vector>
 #include <memory>
 #include <algorithm>
 #include <random>
-#include "imgui.h"
-
-#ifndef PIXEL_H
-#define PIXEL_H
-
-enum Behaviour 
-{
-  STATIC,
-  DYNAMIC,
-  WATER
-};
 
 class Pixel
 {
@@ -39,5 +32,3 @@ private:
   SDL_Point lastPosition;
   void Gravity(std::vector<Pixel*>& nearby);
 };
-
-#endif

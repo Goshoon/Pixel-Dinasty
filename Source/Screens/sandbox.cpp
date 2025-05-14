@@ -1,6 +1,31 @@
-#include "sceneExample.h"
+#include "sandbox.h"
 
-sceneExample::sceneExample()
+Color Sandbox::ReturnColorType(Behaviour behaviourType)
+{
+  Color returnColor;
+  switch(behaviourType)
+  {
+    case WATER:
+      returnColor.red = 0;
+      returnColor.blue = 155;
+      returnColor.green = 0;
+      returnColor.alpha = 155;
+      break;
+    case DIRT:
+      returnColor.red = 75;
+      returnColor.blue = 41;
+      returnColor.green = 19;
+      returnColor.alpha = 255;
+      break;
+    default:
+      returnColor = col;
+      break;
+  }
+
+  return returnColor;
+}
+
+Sandbox::Sandbox()
 {
 	std::cout << "Created scenedd!\n";
   pixels.reserve(1700);
@@ -8,10 +33,10 @@ sceneExample::sceneExample()
   deleteSound = Application::GetInstance().GetSound("delete");
 }
 
-sceneExample::~sceneExample()
+Sandbox::~Sandbox()
 {}
 
-void sceneExample::Update()
+void Sandbox::Update()
 {
   Application& app = Application::GetInstance();
   mbCooldown *= 0.1f;
@@ -23,6 +48,11 @@ void sceneExample::Update()
   app.backgroundColor.red = static_cast<int>(backgroundColor.x * 255.0f);
   app.backgroundColor.green = static_cast<int>(backgroundColor.y * 255.0f);
   app.backgroundColor.blue = static_cast<int>(backgroundColor.z * 255.0f);
+
+  if(app.kSpace)
+  {
+    materialMenu = (materialMenu) ? false : true;
+  }
 
   /* Clear Quadtree and place Pixels on repective cells */
   quadtree.Clear();
@@ -63,16 +93,9 @@ void sceneExample::Update()
         if (canPlace)
         {
           Mix_PlayMusic(placeSound, 1);
+          col = ReturnColorType(currentBehaviour);
           Pixel pixel = Pixel(app.mPosition.x, app.mPosition.y, col);
           pixel.behaviour = currentBehaviour;
-
-          if (currentBehaviour == WATER)
-          {
-            pixel.color.red = 0;
-            pixel.color.green = 0;
-            pixel.color.blue = 155;
-            pixel.color.alpha = 155;
-          }
 
           pixels.emplace_back(pixel);
           mbCooldown = 100.0f;
@@ -99,7 +122,7 @@ void sceneExample::Update()
   }
 }
 
-void sceneExample::Render()
+void Sandbox::Render()
 {
   Application& app = Application::GetInstance();
 
@@ -156,20 +179,6 @@ void sceneExample::Render()
     ImGui::Begin("Brush!", &brushMenu);
     ImGui::Text("Brush color");
     ImGui::ColorEdit4("Color", (float*)&color, ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_AlphaBar );
-
-    if (ImGui::Button("Static"))
-      currentBehaviour = STATIC;
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Dynamic"))
-      currentBehaviour = DYNAMIC;
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Water"))
-      currentBehaviour = WATER;
-    
     ImGui::End();
   }
 
@@ -181,5 +190,45 @@ void sceneExample::Render()
     ImGui::End();
   }
 
+  if(materialMenu)
+  {
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 windowSize = ImVec2(300, 200); // Set your desired size
+    ImVec2 center = ImVec2(
+    (io.DisplaySize.x - windowSize.x) * 0.5f,
+    (io.DisplaySize.y - windowSize.y) * 0.5f
+    );
+
+    
+    ImGui::SetNextWindowPos(center, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+
+    ImGuiWindowFlags flags =ImGuiWindowFlags_NoMove |
+                            ImGuiWindowFlags_NoResize |
+                            ImGuiWindowFlags_NoCollapse;
+//                            ImGuiWindowFlags_NoTitleBar;
+
+    ImGui::Begin("Material Bucket!", &materialMenu, flags );
+
+    if (ImGui::Button("Static"))
+     currentBehaviour = STATIC;
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Dynamic"))
+      currentBehaviour = DYNAMIC;
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Water"))
+      currentBehaviour = WATER;
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Dirt"))
+      currentBehaviour = DIRT;
+
+    ImGui::End();
+  }
   SDL_Color boundCol = { 255, 255, 255, 255 };
 }

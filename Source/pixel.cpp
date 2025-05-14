@@ -14,47 +14,56 @@ Pixel::Pixel(int x, int y, Color col)
 
 void Pixel::Update(std::vector<Pixel*>& nearby)
 {
-  int worldBorder = WINDOW_HEIGHT / RENDER_SCALE - 1;
+  SDL_Point worldBorder;
+  worldBorder.x = WINDOW_WIDTH / RENDER_SCALE - 1;
+  worldBorder.y = WINDOW_HEIGHT / RENDER_SCALE - 1;
+
   switch(behaviour)
   {
     case DYNAMIC:
       Gravity(nearby);
       break;
     case WATER:
-      Gravity(nearby);
-
-      bool leftFree = CheckCollision(nearby, -1, 0);
-      bool rightFree = CheckCollision(nearby, 1, 0);
-
-      if (CheckCollision(nearby, 0, 1) || position.y == worldBorder)
       {
-        if(leftFree && rightFree)
+        Gravity(nearby);
+
+        bool leftCol = CheckCollision(nearby, -1, 0);
+        bool rightCol = CheckCollision(nearby, 1, 0);
+
+        if (CheckCollision(nearby, 0, 1) || position.y == worldBorder.y)
         {
-          std::random_device rd;
-          std::mt19937 gen(rd());
+          if(!leftCol && !rightCol)
+          {
+            std::random_device rd;
+            std::mt19937 gen(rd());
 
-          std::uniform_int_distribution<> dist(0, 1);
+            std::uniform_int_distribution<> dist(0, 1);
 
-          int random_number = dist(gen);
+            int random_number = dist(gen);
 
-          if(random_number == 0)
+            if(random_number == 0 && position.x > 0)
+            {
+              position.x--;
+            }
+            else if (position.x < worldBorder.x)
+            {
+              position.x++;
+            }
+          }
+          else if (!leftCol && position.x > 0)
           {
             position.x--;
           }
-          else 
+          else if (!rightCol && position.x < worldBorder.x)
           {
             position.x++;
           }
         }
-        else if (leftFree)
-        {
-          position.x--;
-        }
-        else if (rightFree)
-        {
-          position.x++;
-        }
       }
+      break;
+
+    case DIRT:
+      Gravity(nearby);
       break;
   }
 }

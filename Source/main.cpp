@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 	Inititialize();
 
 	// Create initial scene
-	unique_ptr<Screen> currentScreen = make_unique<sceneExample>();
+	unique_ptr<Screen> currentScreen = make_unique<Sandbox>();
   Application& app = Application::GetInstance();
 
 	while(!app.done)
