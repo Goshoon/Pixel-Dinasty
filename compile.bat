@@ -3,6 +3,7 @@ color 2
 setlocal enabledelayedexpansion
 windres resources.rc -O coff -o resources.res
 set APPNAME=PixelDynasty
+set DEFAULT_SDL2=-c:/Dependencies/SDL2
 set "SOURCES="
 set "OBJECTS="
 set "INCLUDES="
@@ -20,7 +21,7 @@ for /R ./Headers /D %%d in (*) do (
 
 :: Compilar todos los archivos a un archivo de objeto
 for %%f in (%SOURCES%) do (
-    g++ -std=c++17 -c %%f -I ./Headers/ %INCLUDES% -I C:/Dependencies/SDL2/include -o %%~nf.o
+    g++ -std=c++17 -c %%f -I ./Headers/ %INCLUDES% -I %DEFAULT_SDL2%:w/include -o %%~nf.o
      if errorlevel 1 (
         echo Error compiling %%f.
         pause
@@ -29,7 +30,7 @@ for %%f in (%SOURCES%) do (
 )
 
 :: Conectar todos los archivos al ejecutable
-g++ %OBJECTS% -L C:/Dependencies/SDL2/lib -o ./Bin/%APPNAME%.exe resources.res -static-libgcc -static-libstdc++ -lmingw32 -Wpedantic -Wmaybe-uninitialized -DSDL2_STATIC -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+g++ %OBJECTS% -L %DEFAULT_SDL2%/lib -o ./Bin/%APPNAME%.exe resources.res -static-libgcc -static-libstdc++ -lmingw32 -Wpedantic -Wmaybe-uninitialized -DSDL2_STATIC -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
  if errorlevel 1 (
     echo Linker error compiling %%f.
     pause
