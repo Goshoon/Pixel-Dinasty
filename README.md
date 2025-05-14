@@ -27,7 +27,7 @@
 
 2. **Automated Build (using `build.bat`)**
            - Use my script build.bat, which uses MinGW to build the project and automates most tasks.
-           - **Requirements**: You need to have `SDL2/include` and `SDL2/lib` directories in a folder named **Dependencies** on your local `C:` drive. You can also modify the `DEFAULT_INCLUDE` and `DEFAULT_LIB` to point to a different folder if your SDL2 files are located elsewhere.
+           - **Requirements**: You need to have `SDL2/include` and `SDL2/lib` directories in a folder named **Dependencies** on your local `C:` drive. You can also modify the `DEFAULT_SDL2` to point to a different folder if your SDL2 files are located elsewhere.
            - This script also embeds descriptions, version information, and a game icon into the executable (`PixelDynasty.exe`), making it ready to be shipped.
 
 In the end, you should have a Bin folder containing the Resources folder along with all the necessary .dll files.
