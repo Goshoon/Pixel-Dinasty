@@ -1,5 +1,17 @@
 // https://www.youtube.com/watch?v=iUq0waTh9Pw&ab_channel=%E2%98%86111loggedin%2F%2Fxxenaa%E2%99%A1
 #include "pixel.h"
+
+int Clamp(int variable, int minimum, int maximum)
+{
+  if (variable < minimum)
+    return minimum;
+
+  if (variable > maximum)
+    return maximum;
+
+  return variable;
+}
+
 Pixel::Pixel()
 {}
 
@@ -10,14 +22,12 @@ Pixel::Pixel(int x, int y, Color col)
   position.w = 1;
   position.h = 1;
   color = col;
+  worldBorder.x = WINDOW_WIDTH / RENDER_SCALE - 1;
+  worldBorder.y = WINDOW_HEIGHT / RENDER_SCALE - 1;
 }
 
 void Pixel::Update(std::vector<Pixel*>& nearby)
 {
-  SDL_Point worldBorder;
-  worldBorder.x = WINDOW_WIDTH / RENDER_SCALE - 1;
-  worldBorder.y = WINDOW_HEIGHT / RENDER_SCALE - 1;
-
   switch(behaviour)
   {
     case DYNAMIC:
@@ -29,8 +39,10 @@ void Pixel::Update(std::vector<Pixel*>& nearby)
 
         bool leftCol = CheckCollision(nearby, -1, 0);
         bool rightCol = CheckCollision(nearby, 1, 0);
+        bool leftBellowCol = CheckCollision(nearby, -1, 1);
+        bool rightBellowCol = CheckCollision(nearby, 1, 1);
 
-        if (CheckCollision(nearby, 0, 1) || position.y == worldBorder.y)
+        if (CheckCollision(nearby, 0, 1))
         {
           if(!leftCol && !rightCol)
           {
@@ -58,6 +70,16 @@ void Pixel::Update(std::vector<Pixel*>& nearby)
           {
             position.x++;
           }
+          else if (!leftBellowCol && position.x < 0 && position.y > worldBorder.y)
+          {
+            position.x--;
+            position.y++;
+          }
+          else if (!rightBellowCol && position.x > worldBorder.x && position.y > worldBorder.y)
+          {
+            position.x++;
+            position.y++;
+          }
         }
       }
       break;
@@ -65,7 +87,13 @@ void Pixel::Update(std::vector<Pixel*>& nearby)
     case DIRT:
       Gravity(nearby);
       break;
+    case STONE:
+      Gravity(nearby);
+      break;
   }
+
+  position.x = Clamp(position.x, 0, worldBorder.x);
+  position.y = Clamp(position.y, 0, worldBorder.y);
 }
 
 void Pixel::Draw()
@@ -75,6 +103,7 @@ void Pixel::Draw()
   SDL_RenderDrawRect(app.renderer, &position);
 }
 
+/* Gravity */
 void Pixel::Gravity(std::vector<Pixel*>& nearby)
 {
   if (position.y < WINDOW_HEIGHT / RENDER_SCALE - 1)
@@ -119,6 +148,23 @@ bool Pixel::CheckCollision(std::vector<Pixel*>& nearby, int xoffset, int yoffset
     {
       return true;
     }
+  }
+
+  return false;
+}
+
+bool Pixel::CheckCollision(std::vector<Pixel*>& nearby, int xoffset, int yoffset, Behaviour behaviourLookup)
+{
+  SDL_Rect pos = position;
+  pos.x += xoffset;
+  pos.y += yoffset;
+
+  for (auto& near : nearby)
+  {
+    if (this == near) continue;
+
+    if (Collide(pos, near->position) && near->behaviour == behaviourLookup)
+      return true;
   }
 
   return false;

@@ -18,17 +18,19 @@ public:
   Pixel();
   Pixel(int x, int y, Color col);
   
+  Behaviour behaviour = DYNAMIC;
   SDL_Rect position;
   Color color;
-  Behaviour behaviour = DYNAMIC;
   bool moved = true;
 
   bool CheckCollision(std::vector<Pixel*>& nearby);
   bool CheckCollision(std::vector<Pixel*>& nearby, int xoffset, int yoffset);
+  bool CheckCollision(std::vector<Pixel*>& nearby, int xoffset, int yoffset, Behaviour behaviourLookup);
 
   void Update(std::vector<Pixel*>& nearby);
   void Draw();
 private:
   SDL_Point lastPosition;
+  SDL_Point worldBorder;
   void Gravity(std::vector<Pixel*>& nearby);
 };

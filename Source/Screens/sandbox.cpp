@@ -1,5 +1,4 @@
 #include "sandbox.h"
-
 Color Sandbox::ReturnColorType(Behaviour behaviourType)
 {
   Color returnColor;
@@ -7,14 +6,20 @@ Color Sandbox::ReturnColorType(Behaviour behaviourType)
   {
     case WATER:
       returnColor.red = 0;
-      returnColor.blue = 155;
       returnColor.green = 0;
-      returnColor.alpha = 155;
+      returnColor.blue = 155;
+      returnColor.alpha = 255;
       break;
     case DIRT:
-      returnColor.red = 75;
-      returnColor.blue = 41;
-      returnColor.green = 19;
+      returnColor.red = 67;
+      returnColor.green = 40;
+      returnColor.blue = 24;
+      returnColor.alpha = 255;
+      break;
+    case STONE:
+      returnColor.red = 50;
+      returnColor.green = 50;
+      returnColor.blue = 50;
       returnColor.alpha = 255;
       break;
     default:
@@ -27,7 +32,7 @@ Color Sandbox::ReturnColorType(Behaviour behaviourType)
 
 Sandbox::Sandbox()
 {
-	std::cout << "Created scenedd!\n";
+	std::cout << "Created Sandbox!\n";
   pixels.reserve(1700);
   placeSound = Application::GetInstance().GetSound("pixel");
   deleteSound = Application::GetInstance().GetSound("delete");
@@ -40,6 +45,7 @@ void Sandbox::Update()
 {
   Application& app = Application::GetInstance();
   mbCooldown *= 0.1f;
+  kSpaceCooldown *= 0.95f;
   col.red = static_cast<int>(color.x * 255.0f);
   col.green = static_cast<int>(color.y * 255.0f);
   col.blue = static_cast<int>(color.z * 255.0f);
@@ -49,8 +55,9 @@ void Sandbox::Update()
   app.backgroundColor.green = static_cast<int>(backgroundColor.y * 255.0f);
   app.backgroundColor.blue = static_cast<int>(backgroundColor.z * 255.0f);
 
-  if(app.kSpace)
+  if(app.kSpace && kSpaceCooldown < 1.0f)
   {
+    kSpaceCooldown = 100.0f;
     materialMenu = (materialMenu) ? false : true;
   }
 
@@ -93,8 +100,8 @@ void Sandbox::Update()
         if (canPlace)
         {
           Mix_PlayMusic(placeSound, 1);
-          col = ReturnColorType(currentBehaviour);
           Pixel pixel = Pixel(app.mPosition.x, app.mPosition.y, col);
+          pixel.color = ReturnColorType(currentBehaviour);
           pixel.behaviour = currentBehaviour;
 
           pixels.emplace_back(pixel);
@@ -193,20 +200,19 @@ void Sandbox::Render()
   if(materialMenu)
   {
     ImGuiIO& io = ImGui::GetIO();
-    ImVec2 windowSize = ImVec2(300, 200); // Set your desired size
+    ImVec2 windowSize = ImVec2(280, 200); // Set your desired size
     ImVec2 center = ImVec2(
     (io.DisplaySize.x - windowSize.x) * 0.5f,
     (io.DisplaySize.y - windowSize.y) * 0.5f
     );
 
-    
     ImGui::SetNextWindowPos(center, ImGuiCond_Always);
     ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
 
-    ImGuiWindowFlags flags =ImGuiWindowFlags_NoMove |
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoMove |
                             ImGuiWindowFlags_NoResize |
-                            ImGuiWindowFlags_NoCollapse;
-//                            ImGuiWindowFlags_NoTitleBar;
+                            ImGuiWindowFlags_NoCollapse |
+                            ImGuiWindowFlags_NoTitleBar;
 
     ImGui::Begin("Material Bucket!", &materialMenu, flags );
 
@@ -227,6 +233,11 @@ void Sandbox::Render()
 
     if (ImGui::Button("Dirt"))
       currentBehaviour = DIRT;
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Stone"))
+      currentBehaviour = STONE;
 
     ImGui::End();
   }

@@ -24,6 +24,7 @@ private:
   Mix_Music* placeSound;
   Mix_Music* deleteSound;
   float mbCooldown = 0.0f;
+  float kSpaceCooldown = 0.0f;
   bool brushMenu = false;
   bool sandboxMenu = false;
   bool materialMenu = false;

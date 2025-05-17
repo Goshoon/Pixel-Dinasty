@@ -93,17 +93,7 @@ void Quadtree::Retrieve(std::vector<Pixel*>& returnPixels, const SDL_Rect& area)
     // Add all objects in this node
     returnPixels.insert(returnPixels.end(), pixels.begin(), pixels.end());
 }
-/*
-void Quadtree::Retrieve(std::vector<Pixel*>& returnPixels, const SDL_Rect& area) 
-{
-    int index = GetIndex(area);
-    if (index != -1 && !nodes.empty()) {
-        nodes[index]->Retrieve(returnPixels, area);
-    }
 
-    returnPixels.insert(returnPixels.end(), pixels.begin(), pixels.end());
-}
-*/
 void Quadtree::Draw(SDL_Renderer* renderer) const
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 190, 100);
